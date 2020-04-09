@@ -25,11 +25,13 @@ class BlueECSigner: SignerAlgorithm {
     
     private let key: Data
     private let curve: EllipticCurve
+    private let isPEMFormat: Bool
     
     // Initialize a signer using .utf8 encoded PEM private key.
-    init(key: Data, curve: EllipticCurve) {
+    init(key: Data, curve: EllipticCurve, isPEMFormat: Bool = true) {
         self.key = key
         self.curve = curve
+        self.isPEMFormat = isPEMFormat
     }
     
     // Sign the header and claims to produce a signed JWT String
@@ -96,7 +98,11 @@ class BlueECVerifier: VerifierAlgorithm {
             let r = signature.subdata(in: 0 ..< signature.count/2)
             let s = signature.subdata(in: signature.count/2 ..< signature.count)
             let signature = try ECSignature(r: r, s: s)
-            let publicKey = try ECPublicKey(key: keyString)
+            
+            let publicKey = try isPEMFormat ?
+                ECPublicKey(key: keyString):
+                ECPublicKey(secKey: keyString)
+                
             guard publicKey.curve == curve else {
                 return false
             }
