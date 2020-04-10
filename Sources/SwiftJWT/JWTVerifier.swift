@@ -127,10 +127,10 @@ public struct JWTVerifier {
     }
     
     /// Initialize a JWTVerifier using the ECDSA SHA 256 algorithm and the provided public key.
-    /// - Parameter publicKey: The UTF8 encoded PEM public key, with a "BEGIN PUBLIC KEY" header.
+    /// - Parameter publicKey: The UTF8 encoded PEM public key, with a "BEGIN PUBLIC KEY" header or UTF8 encoded base64 SecKey.
     @available(OSX 10.13, iOS 11, tvOS 11.0, watchOS 4.0, *)
-    public static func es256(publicKey: Data) -> JWTVerifier {
-        return JWTVerifier(verifierAlgorithm: BlueECVerifier(key: publicKey, curve: .prime256v1))
+    public static func es256(publicKey: Data, isPEMFormat: Bool = true) -> JWTVerifier {
+        return JWTVerifier(verifierAlgorithm: BlueECVerifier(key: publicKey, curve: .prime256v1, isPEMFormat: isPEMFormat))
     }
     
     /// Initialize a JWTVerifier using the ECDSA SHA 384 algorithm and the provided public key.
